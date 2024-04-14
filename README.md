@@ -26,7 +26,6 @@ Se han probado las 5 funciones en distintas situaciones y no se han encontrado f
 Ingrese su opción: 
 ````
 En esta pantalla se le pedirá al usuario que ingrese el número correspondiente a la opción deseada. En este ejemplo usaremos la opción 1.
-Se le pedirá al usuario los datos del nuevo paciente a registrar: Su nombre, edad, y síntoma. El programa guardará automáticamente su hora de llegada y asignará su prioridad en Bajo.
 ````
 ========================================
      Sistema de Gestión Hospitalaria
@@ -44,3 +43,4 @@ Ingrese edad del paciente: 25
 Ingrese síntoma del paciente: Inflamación en garganta
 Presione una tecla para continuar...
 ````
+Se le pedirá al usuario los datos del nuevo paciente a registrar: Su nombre, edad, y síntoma. El programa guardará automáticamente su hora de llegada y asignará su prioridad en Bajo.
