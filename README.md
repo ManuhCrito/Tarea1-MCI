@@ -11,4 +11,4 @@ Y luego ejecutar
 ./main
 ````
 ## Control de funcionamiento
-Se han probado las 5 funciones en distintas situaciones y no se han encontrado fallos previstos.
+Se han probado las 5 funciones en distintas situaciones y no se han encontrado fallos de lógica o compilación.
