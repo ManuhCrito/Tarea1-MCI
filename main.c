@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 
+// Definimos el struct que será el formato de cada paciente.
 typedef struct
 {
   char nombre[50];
@@ -37,12 +38,18 @@ void mostrarMenuPrincipal() {
   puts("6) Salir");
 }
 
+// Función para registrar un paciente. Requiere la lista de pacientes y
+// la variable para gestionar el tiempo.
 void registrar_paciente(List *pacientes, time_t *tiempo)
 {
+  // Reservamos memoria para el nuevo paciente, que manejaremos durante la función
+  // en una variable temporal.
   tipoPaciente *pacienteNuevo = (tipoPaciente *) malloc(sizeof(tipoPaciente));
+  // Llamamos al struct tm, que nos ayudará a almacenar la hora de registro del paciente.
   struct tm *infoTiempo;
   int tempHora;
-  
+
+  // Obtenemos nombre, edad y síntoma del paciente y lo almacenamos en pacienteNuevo.
   printf("Registrar nuevo paciente\n");
   printf("Ingrese nombre del paciente: ");
   scanf(" %49[^\n]", pacienteNuevo->nombre);
@@ -52,25 +59,36 @@ void registrar_paciente(List *pacientes, time_t *tiempo)
   scanf(" %49[^\n]", pacienteNuevo->sintoma);
   strcpy(pacienteNuevo->prioridad, "Bajo");
 
+  // Recibimos la hora actual con este bloque
   time(tiempo);
   infoTiempo = localtime(tiempo);
+  // Y después manipulamos la hora para que esté a la
+  // zona horaria de Chile.
   tempHora = infoTiempo->tm_hour -= 4;
   if (infoTiempo->tm_hour < 0) infoTiempo->tm_hour += 24;
-  
+
+  // Se guardan hora y minuto de ingreso en 2 variables int.
   pacienteNuevo->horaIngreso = tempHora;
   pacienteNuevo->minutoIngreso = infoTiempo->tm_min;
 
+  // Se almacena el paciente registrado en la lista.
   list_pushBack(pacientes, pacienteNuevo);
 }
 
+// Función para mostrar a todos los pacientes por orden de prioridad y hora 
+// de llegada.
 void mostrar_lista_pacientes(List *pacientes)
 {
+  // Si no hay pacientes en la lista, se
+  // volverá al menú.
   tipoPaciente *aux = list_first(pacientes);
   if (aux == NULL)
   {
     printf("No hay pacientes en la lista\n\n");
     return;
   }
+
+  // Imprimimos todos los pacientes.
   printf("Pacientes en espera: \n");
   int numPaciente = 1;
   printf("\n");
@@ -88,13 +106,17 @@ void mostrar_lista_pacientes(List *pacientes)
   }
 }
 
+// Función para reordenar los pacientes después de asignar nueva prioridad.
 void reordenar_pacientes(List *pacientes)
 {
+  // Creamos una lista temporal para auxiliar el proceso
   List *listaTemp = list_create();
-  
+
+  // Comenzamos a enviar los pacientes a listaTemp
   tipoPaciente *aux = list_first(pacientes);
   while (aux != NULL)
     {
+      // Nos aseguramos de enviar primero los de prioridad Alto.
       if (strcmp(aux->prioridad, "Alto") == 0) list_pushBack(listaTemp, aux);
       aux = list_next(pacientes);
     }
@@ -102,6 +124,7 @@ void reordenar_pacientes(List *pacientes)
   aux = list_first(pacientes);
   while (aux != NULL)
   {
+    // Enviamos los de prioridad Medio.
     if (strcmp(aux->prioridad, "Medio") == 0) list_pushBack(listaTemp, aux);
     aux = list_next(pacientes);
   }
@@ -109,11 +132,14 @@ void reordenar_pacientes(List *pacientes)
   aux = list_first(pacientes);
   while (aux != NULL)
   {
+    // Enviamos los de prioridad Bajo.
     if (strcmp(aux->prioridad, "Bajo") == 0) list_pushBack(listaTemp, aux);
     aux = list_next(pacientes);
   }
+  // Limpiamos la lista original.
   list_clean(pacientes);
 
+  // Enviamos todos los pacientes reordenados a la lista original.
   aux = list_first(listaTemp);
   while (aux != NULL)
     {
@@ -121,11 +147,15 @@ void reordenar_pacientes(List *pacientes)
       aux = list_next(listaTemp);
     }
 
+  // Liberamos la memoria de la lista original.
   free(listaTemp);
 }
 
+// Función para asignar nueva prioridad de paciente y reordenarlos a todos.
 void asignar_prioridad_y_reordenar(List *pacientes)
 {
+  // Si no hay pacientes en la lista, se
+  // volverá al menú.
   tipoPaciente *aux = list_first(pacientes);
   if (aux == NULL)
   {
@@ -133,6 +163,8 @@ void asignar_prioridad_y_reordenar(List *pacientes)
     return;
   }
 
+  // Le pedimos al usuario el nombre del paciente a
+  // modificar.
   char nombreTemp[50];
   printf("Ingrese el nombre del paciente: ");
   scanf(" %49[^\n]", nombreTemp);
@@ -141,10 +173,14 @@ void asignar_prioridad_y_reordenar(List *pacientes)
   int numPrio = 0;
   while (aux != NULL)
     {
+      // Si se encuentra al paciente, se pedirá ingresar un número del
+      // 1 al 3 que corresponden a cada nivel de prioridad.
       if (strcmp(aux->nombre, nombreTemp) == 0)
       {
         printf("Ingrese nueva prioridad (1|Bajo  2|Medio  3|Alto): ");
         scanf("%i", &numPrio);
+        // Un switch() para reescribir la prioridad del paciente.
+        // Si no es válida, se cancelará y se volverá al menú.
         switch (numPrio)
           {
             case 1:
@@ -163,6 +199,8 @@ void asignar_prioridad_y_reordenar(List *pacientes)
         printf("Prioridad modificada con éxito\n\n");
         break;
       }
+      // Si no hay pacientes en la lista, se
+      // volverá al menú.
       aux = list_next(pacientes);
       if (aux == NULL)
       {
@@ -170,13 +208,18 @@ void asignar_prioridad_y_reordenar(List *pacientes)
         return;
       }
     }
+  // Una vez modificada la prioridad, se proceden a reordenar
+  // los pacientes.
   printf("Reordenando pacientes...\n");
   reordenar_pacientes(pacientes);
   printf("Pacientes reordenados con éxito\n\n");
 }
 
+// Función para atender a un paciente.
 void atender_paciente(List *pacientes)
 {
+  // Si no hay pacientes en la lista, se
+  // volverá al menú.
   tipoPaciente *aux = list_first(pacientes);
   if (aux == NULL)
   {
@@ -184,18 +227,23 @@ void atender_paciente(List *pacientes)
     return;
   }
 
+  // A continuación se muestran por pantalla
+  // los datos del paciente a atender.
   printf("Atendiendo al paciente:\n\n");
   printf("Nombre: %s\n", aux->nombre);
   printf("Edad: %i\n", aux->edad);
   printf("Síntoma: %s\n", aux->sintoma);
   printf("Hora Ingreso: %02d:%02d\n", aux->horaIngreso, aux->minutoIngreso);
   printf("Prioridad: %s\n\n", aux->prioridad);
+  // Se retira al paciente de la lista.
   printf("Paciente %s se ha atendido\nEliminando de la lista...\n\n", aux->nombre);
   list_popFront(pacientes);
 }
 
 void mostrar_pacientes_por_prioridad(List *pacientes)
 {
+  // Si no hay pacientes en la lista, se
+  // volverá al menú.
   tipoPaciente *aux = list_first(pacientes);
   if (aux == NULL)
   {
@@ -205,9 +253,13 @@ void mostrar_pacientes_por_prioridad(List *pacientes)
   
   int numPrio;
   char prioElegida[6];
-  
+
+  // Se le pedirá al usuario que seleccione una prioridad con
+  // números del 1 al 3.
   printf("Por favor ingrese prioridad (1|Bajo  2|Medio  3|Alto): ");
   scanf("%i", &numPrio);
+  // switch() para almacenar la prioridad a mostrar.
+  // Si no es válida, se volverá al menú.
   switch (numPrio)
     {
       case 1:
@@ -223,7 +275,9 @@ void mostrar_pacientes_por_prioridad(List *pacientes)
         printf("Prioridad no válida\n\n");
         return;
     }
-  
+
+  // Se imprimen por pantalla los pacientes correspondientes
+  // a la prioridad seleccionada.
   printf("Pacientes con prioridad %s: \n\n", prioElegida);
   int numPaciente = 1;
   while (aux != NULL)
@@ -240,6 +294,8 @@ void mostrar_pacientes_por_prioridad(List *pacientes)
       }
       aux = list_next(pacientes);
     }
+  // Si numPaciente no sufrió cambios quiere decir que no había ningún paciente válido
+  // y se vuelve al menú.
   if (numPaciente == 1) printf("No hay pacientes con prioridad %s\n\n", prioElegida);
 }
 
