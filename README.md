@@ -11,7 +11,7 @@ Y luego ejecutar
 ./main
 ````
 ## Control de funcionamiento
-Se han probado las 5 funciones en distintas situaciones y no se han encontrado fallos de lógica o compilación.
+- Cuando se registra un paciente, el código puede corromperse si el usuario ingresa un carácter no numérico en la entradad de edad.
 ## Ejemplo de funcionamiento
 ````
 ========================================
@@ -44,3 +44,27 @@ Ingrese síntoma del paciente: Inflamación en garganta
 Presione una tecla para continuar...
 ````
 Se le pedirá al usuario los datos del nuevo paciente a registrar: Su nombre, edad, y síntoma. El programa guardará automáticamente su hora de llegada y asignará su prioridad en Bajo.
+````
+========================================
+     Sistema de Gestión Hospitalaria
+========================================
+1) Registrar paciente
+2) Asignar prioridad a paciente
+3) Mostrar lista de espera
+4) Atender al siguiente paciente
+5) Mostrar pacientes por prioridad
+6) Salir
+Ingrese su opción: 3
+Pacientes en espera: 
+
+Paciente N°1: 
+
+Nombre: John Doe
+Edad: 25
+Síntoma: Inflamación de garganta
+Hora Ingreso: 21:59
+Prioridad: Bajo
+
+Presione una tecla para continuar...
+````
+Después de añadir un paciente, podemos visualizarlo en la lista de espera eligiendo la opción 3.
