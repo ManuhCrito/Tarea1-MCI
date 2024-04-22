@@ -65,7 +65,7 @@ void registrar_paciente(List *pacientes, time_t *tiempo)
   // Y después manipulamos la hora para que esté a la
   // zona horaria de Chile.
   tempHora = infoTiempo->tm_hour -= 4;
-  if (infoTiempo->tm_hour < 0) infoTiempo->tm_hour += 24;
+  if (tempHora < 0) tempHora += 24;
 
   // Se guardan hora y minuto de ingreso en 2 variables int.
   pacienteNuevo->horaIngreso = tempHora;
